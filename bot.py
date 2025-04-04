@@ -26,9 +26,39 @@ RANGE_NAME = 'Sheet1!A1:A8'  # Adjust the range as needed
 target_time = datetime.time(hour=5, minute=7, tzinfo=datetime.timezone.utc)
 @tasks.loop(time=target_time)
 async def daily_task():
-    # Your function code here
     channel = bot.get_channel(1357576514899677206)  # Replace with your channel ID
-    await channel.send("This is your daily message!")
+
+    try:
+        # Fetch data
+        sheet = sheets_service.spreadsheets()
+        result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,
+                                    range='Sheet1').execute()
+        values = result.get('values', [])
+
+        if not values or len(values) < 2:
+            await channel.send("Spreadsheet has no data.")
+            return
+
+        headers = values[0]
+        rows = values[1:]
+
+        messages = []
+        for row in rows:
+            name = row[0]
+            for i in range(1, len(headers)):
+                subject = headers[i]
+                value = row[i] if i < len(row) else ""
+                if value.strip() == "":
+                    messages.append(f"Hey {name}, go do your {subject.lower()}! You lazy ass!")
+
+        if messages:
+            await channel.send("\n".join(messages))
+        else:
+            await channel.send("All tasks completed! Good job!")
+
+    except Exception as e:
+        await channel.send(f"Error while checking the sheet: {e}")
+
 
 @bot.command(name='getsheet')
 async def get_sheet_data(ctx):
