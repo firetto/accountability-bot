@@ -53,7 +53,7 @@ async def daily_task(ctx):
         # rows = values[1:]
 
         messages = []
-        messages.append(sheets)
+        messages.append(str(sheets))
         # for row in rows:
         #     name = row[0]
         #     for i in range(1, len(headers)):
