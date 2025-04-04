@@ -26,6 +26,7 @@ RANGE_NAME = 'Sheet1!A1:A8'  # Adjust the range as needed
 async def get_sheet_data(ctx):
     """Fetches data from a Google Sheet and sends it to Discord."""
     try:
+        
         # Call the Sheets API to fetch data
         sheet = sheets_service.spreadsheets()
         result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,
@@ -44,6 +45,22 @@ async def get_sheet_data(ctx):
 
         # Discord messages have a character limit, so we wrap the text in a code block.
         await ctx.send(f"```\n{output}\n```")
+    except Exception as e:
+        await ctx.send(f"An error occurred: {e}")
+        
+@bot.command(name='getsheets')
+async def get_all_sheets(ctx):
+    """Fetches data from a Google Sheet and sends it to Discord."""
+    try:
+        # Fetch spreadsheet metadata
+        spreadsheet = service.spreadsheets().get(spreadsheetId=SPREADSHEET_ID).execute()
+        sheets = spreadsheet.get('sheets', [])
+        sheet_names = [sheet['properties']['title'] for sheet in sheets]
+
+        if sheet_names:
+            await ctx.send("Sheet names:\n" + "\n".join(sheet_names))
+        else:
+            await ctx.send("No sheets found in the spreadsheet.")
     except Exception as e:
         await ctx.send(f"An error occurred: {e}")
 
