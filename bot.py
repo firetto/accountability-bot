@@ -53,7 +53,7 @@ async def get_all_sheets(ctx):
     """Fetches data from a Google Sheet and sends it to Discord."""
     try:
         # Fetch spreadsheet metadata
-        spreadsheet = service.spreadsheets().get(spreadsheetId=SPREADSHEET_ID).execute()
+        spreadsheet = sheets_service.spreadsheets().get(spreadsheetId=SPREADSHEET_ID).execute()
         sheets = spreadsheet.get('sheets', [])
         sheet_names = [sheet['properties']['title'] for sheet in sheets]
 
