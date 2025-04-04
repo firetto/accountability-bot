@@ -47,5 +47,7 @@ async def get_sheet_data(ctx):
     except Exception as e:
         await ctx.send(f"An error occurred: {e}")
 
-# Run the bot (replace with your actual Discord bot token)
-bot.run('1357543144002027520')
+with open("token.txt") as f:
+    token = f.readline()
+    # Run the bot (replace with your actual Discord bot token)
+    bot.run(token)
