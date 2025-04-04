@@ -26,9 +26,9 @@ RANGE_NAME = 'Sheet1'  # Adjust the range as needed
 # target_time = datetime.time(hour=5, minute=7, tzinfo=datetime.timezone.utc)
 # @tasks.loop(time=target_time)
 
-@bot.command(name="testdaily")
-async def daily_task():
-    channel = bot.get_channel(1357576514899677206)  # Replace with your channel ID
+@bot.command(name='testdaily')
+async def daily_task(ctx):
+    # channel = bot.get_channel(1357576514899677206)  # Replace with your channel ID
 
     try:
         
@@ -63,12 +63,12 @@ async def daily_task():
         #             messages.append(f"Hey {name}, go do your {subject.lower()}! You lazy ass!")
 
         if messages:
-            await channel.send("\n".join(messages))
+            await ctx.send("\n".join(messages))
         else:
-            await channel.send("All tasks completed! Good job!")
+            await ctx.send("All tasks completed! Good job!")
 
     except Exception as e:
-        await channel.send(f"Error while checking the sheet: {e}")
+        await ctx.send(f"Error while checking the sheet: {e}")
 
 
 @bot.command(name='getsheet')
