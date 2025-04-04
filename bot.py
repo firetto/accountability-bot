@@ -1,5 +1,6 @@
 import discord
-from discord.ext import commands
+import datetime
+from discord.ext import commands, tasks
 
 # Google Sheets API imports
 from google.oauth2 import service_account
@@ -21,6 +22,13 @@ sheets_service = build('sheets', 'v4', credentials=creds)
 # Spreadsheet details (replace with your own)
 SPREADSHEET_ID = '1pELDQAtI_zociYCnMZQRK6qllRNZVYiS1dmnuEMA-6A'
 RANGE_NAME = 'Sheet1!A1:A8'  # Adjust the range as needed
+
+target_time = datetime.time(hour=5, minute=7, tzinfo=datetime.timezone.utc)
+@tasks.loop(time=target_time)
+async def daily_task():
+    # Your function code here
+    channel = bot.get_channel(1357576514899677206)  # Replace with your channel ID
+    await channel.send("This is your daily message!")
 
 @bot.command(name='getsheet')
 async def get_sheet_data(ctx):
@@ -64,7 +72,14 @@ async def get_all_sheets(ctx):
     except Exception as e:
         await ctx.send(f"An error occurred: {e}")
 
+@bot.event
+async def on_ready():
+    print(f'Logged in as {bot.user}')
+    daily_task.start()
+
 with open("token.txt") as f:
     token = f.readline()
     # Run the bot (replace with your actual Discord bot token)
     bot.run(token)
+    
+    
