@@ -31,28 +31,36 @@ async def daily_task():
     channel = bot.get_channel(1357576514899677206)  # Replace with your channel ID
 
     try:
-        # Fetch data
-        sheet = sheets_service.spreadsheets()
-        result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,
-                                    range='Sheet1').execute()
-        values = result.get('values', [])
+        
+        # Fetch spreadsheet metadata
+        spreadsheet = sheets_service.spreadsheets().get(spreadsheetId=SPREADSHEET_ID).execute()
+        sheets = spreadsheet.get('sheets', [])
+        
+        sheet_names = [sheet['properties']['title'] for sheet in sheets]
+        
+        
+        # # Fetch data
+        # sheet = sheets_service.spreadsheets()
+        # result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,
+        #                             range='Sheet1').execute()
+        # values = result.get('values', [])
 
-        if not values or len(values) < 2:
-            await channel.send("Spreadsheet has no data.")
-            return
+        # if not values or len(values) < 2:
+        #     await channel.send("Spreadsheet has no data.")
+        #     return
 
-        headers = values[0]
-        rows = values[1:]
+        # headers = values[0]
+        # rows = values[1:]
 
         messages = []
-        messages.append(values)
-        for row in rows:
-            name = row[0]
-            for i in range(1, len(headers)):
-                subject = headers[i]
-                value = row[i] if i < len(row) else ""
-                if value.strip() == "":
-                    messages.append(f"Hey {name}, go do your {subject.lower()}! You lazy ass!")
+        messages.append(sheets)
+        # for row in rows:
+        #     name = row[0]
+        #     for i in range(1, len(headers)):
+        #         subject = headers[i]
+        #         value = row[i] if i < len(row) else ""
+        #         if value.strip() == "":
+        #             messages.append(f"Hey {name}, go do your {subject.lower()}! You lazy ass!")
 
         if messages:
             await channel.send("\n".join(messages))
