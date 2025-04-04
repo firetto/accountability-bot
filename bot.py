@@ -21,10 +21,12 @@ sheets_service = build('sheets', 'v4', credentials=creds)
 
 # Spreadsheet details (replace with your own)
 SPREADSHEET_ID = '1pELDQAtI_zociYCnMZQRK6qllRNZVYiS1dmnuEMA-6A'
-RANGE_NAME = 'Sheet1!A1:A8'  # Adjust the range as needed
+RANGE_NAME = 'Sheet1'  # Adjust the range as needed
 
-target_time = datetime.time(hour=5, minute=7, tzinfo=datetime.timezone.utc)
-@tasks.loop(time=target_time)
+# target_time = datetime.time(hour=5, minute=7, tzinfo=datetime.timezone.utc)
+# @tasks.loop(time=target_time)
+
+@bot.command(name="testdaily")
 async def daily_task():
     channel = bot.get_channel(1357576514899677206)  # Replace with your channel ID
 
@@ -43,6 +45,7 @@ async def daily_task():
         rows = values[1:]
 
         messages = []
+        messages.append(values)
         for row in rows:
             name = row[0]
             for i in range(1, len(headers)):
